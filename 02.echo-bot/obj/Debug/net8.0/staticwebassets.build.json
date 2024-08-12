@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "tleqlLH2e8v+btP0821tW3B8xBn9OqYJAz7BBFQDigw=",
+  "Source": "EchoBot",
+  "BasePath": "_content/EchoBot",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "EchoBot\\wwwroot",
+      "Source": "EchoBot",
+      "ContentRoot": "C:\\Users\\Dipika Shahare\\BotBuilder-Samples\\samples\\csharp_dotnetcore\\02.echo-bot\\wwwroot\\",
+      "BasePath": "_content/EchoBot",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Dipika Shahare\\BotBuilder-Samples\\samples\\csharp_dotnetcore\\02.echo-bot\\wwwroot\\default.html",
+      "SourceId": "EchoBot",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Dipika Shahare\\BotBuilder-Samples\\samples\\csharp_dotnetcore\\02.echo-bot\\wwwroot\\",
+      "BasePath": "_content/EchoBot",
+      "RelativePath": "default.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\default.html"
+    }
+  ]
+}
