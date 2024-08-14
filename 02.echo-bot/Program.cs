@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using Azure.Security.KeyVault.Secrets;
 
-namespace Microsoft.BotBuilderSamples
+namespace EchoBot
 {
     public class Program
     {

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Dipika Shahare\\BotBuilder-Samples\\samples\\csharp_dotnetcore\\02.echo-bot\\EchoBot.csproj": {}
+    "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\02.echo-bot\\EchoBot.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Dipika Shahare\\BotBuilder-Samples\\samples\\csharp_dotnetcore\\02.echo-bot\\EchoBot.csproj": {
+    "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\02.echo-bot\\EchoBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Dipika Shahare\\BotBuilder-Samples\\samples\\csharp_dotnetcore\\02.echo-bot\\EchoBot.csproj",
+        "projectUniqueName": "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\02.echo-bot\\EchoBot.csproj",
         "projectName": "EchoBot",
-        "projectPath": "C:\\Users\\Dipika Shahare\\BotBuilder-Samples\\samples\\csharp_dotnetcore\\02.echo-bot\\EchoBot.csproj",
+        "projectPath": "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\02.echo-bot\\EchoBot.csproj",
         "packagesPath": "C:\\Users\\Dipika Shahare\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Dipika Shahare\\BotBuilder-Samples\\samples\\csharp_dotnetcore\\02.echo-bot\\obj\\",
+        "outputPath": "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\02.echo-bot\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -61,6 +61,14 @@
             "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
               "version": "[6.0.7, )"
+            },
+            "Microsoft.Bot.Builder.AI.QnA": {
+              "target": "Package",
+              "version": "[4.22.7, )"
+            },
+            "Microsoft.Bot.Builder.Dialogs": {
+              "target": "Package",
+              "version": "[4.22.7, )"
             },
             "Microsoft.Bot.Builder.Integration.AspNet.Core": {
               "target": "Package",
