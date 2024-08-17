@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{A2174399-D374-4D3E-873D-3A6F19197EEC}|CoreBot.csproj|solutionrelative:dialogs\\qnamakerdialog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{A2174399-D374-4D3E-873D-3A6F19197EEC}|CoreBot.csproj|c:\\users\\dipika shahare\\documents\\github\\sughosh_su\\13.core-bot\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2174399-D374-4D3E-873D-3A6F19197EEC}|CoreBot.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2174399-D374-4D3E-873D-3A6F19197EEC}|CoreBot.csproj|c:\\users\\dipika shahare\\documents\\github\\sughosh_su\\13.core-bot\\dialogs\\azuresqldbdialog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2174399-D374-4D3E-873D-3A6F19197EEC}|CoreBot.csproj|solutionrelative:dialogs\\azuresqldbdialog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -17,10 +21,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2174399-D374-4D3E-873D-3A6F19197EEC}|CoreBot.csproj|c:\\users\\dipika shahare\\documents\\github\\sughosh_su\\13.core-bot\\dialogs\\maindialog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2174399-D374-4D3E-873D-3A6F19197EEC}|CoreBot.csproj|solutionrelative:dialogs\\maindialog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2174399-D374-4D3E-873D-3A6F19197EEC}|CoreBot.csproj|c:\\users\\dipika shahare\\documents\\github\\sughosh_su\\13.core-bot\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{A2174399-D374-4D3E-873D-3A6F19197EEC}|CoreBot.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2174399-D374-4D3E-873D-3A6F19197EEC}|CoreBot.csproj|c:\\users\\dipika shahare\\documents\\github\\sughosh_su\\13.core-bot\\adapterwitherrorhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -76,7 +76,7 @@
               "RelativeDocumentMoniker": "Dialogs\\QnAMakerDialog.cs",
               "ToolTip": "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\13.core-bot\\Dialogs\\QnAMakerDialog.cs",
               "RelativeToolTip": "Dialogs\\QnAMakerDialog.cs",
-              "ViewState": "AQIAAC4AAAAAAAAAAIAwwDUAAAA/AAAA",
+              "ViewState": "AQIAADgAAAAAAAAAAAAwwEsAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-14T16:53:50.088Z",
               "EditorCaption": ""
@@ -95,7 +95,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "AzureSQLDBDialog.cs",
               "DocumentMoniker": "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\13.core-bot\\Dialogs\\AzureSQLDBDialog.cs",
               "RelativeDocumentMoniker": "Dialogs\\AzureSQLDBDialog.cs",
@@ -108,20 +108,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\13.core-bot\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
               "ToolTip": "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\13.core-bot\\appsettings.json",
               "RelativeToolTip": "appsettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAABAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2024-08-14T17:15:44.663Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "CancelAndHelpDialog.cs",
               "DocumentMoniker": "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\13.core-bot\\Dialogs\\CancelAndHelpDialog.cs",
               "RelativeDocumentMoniker": "Dialogs\\CancelAndHelpDialog.cs",
@@ -129,12 +129,11 @@
               "RelativeToolTip": "Dialogs\\CancelAndHelpDialog.cs",
               "ViewState": "AQIAABUAAAAAAAAAAIAwwB4AAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-14T17:08:16.426Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-14T17:08:16.426Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "MainDialog.cs",
               "DocumentMoniker": "C:\\Users\\Dipika Shahare\\Documents\\GitHub\\sughosh_su\\13.core-bot\\Dialogs\\MainDialog.cs",
               "RelativeDocumentMoniker": "Dialogs\\MainDialog.cs",
@@ -142,8 +141,7 @@
               "RelativeToolTip": "Dialogs\\MainDialog.cs",
               "ViewState": "AQIAADEAAAAAAAAAAAAgwCQAAAAcAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-14T16:41:40.983Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-14T16:41:40.983Z"
             },
             {
               "$type": "Document",

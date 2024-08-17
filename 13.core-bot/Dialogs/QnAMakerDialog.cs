@@ -1,5 +1,6 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.QnA;
+using Microsoft.Bot.Builder.AI.QnA.Models;
 using Microsoft.Bot.Builder.Dialogs;
 using CoreBot.Dialogs;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Bot.Schema;
 
 namespace CoreBot.Dialogs
 {
@@ -53,14 +55,15 @@ namespace CoreBot.Dialogs
             // Call QnA Maker service
             var httpClient = _httpClientFactory.CreateClient();
 
-            var qnaMaker = new QnAMaker(new QnAMakerEndpoint
+            var qnaMaker = new CustomQuestionAnswering(new QnAMakerEndpoint
             {
-                KnowledgeBaseId = _configuration["QnAKnowledgebaseId"],
-                EndpointKey = _configuration["QnAEndpointKey"],
-                Host = _configuration["QnAEndpointHostName"]
+                KnowledgeBaseId = _configuration["ProjectName"],
+                EndpointKey = _configuration["LanguageEndPointKey"],
+                Host = _configuration["LanguageEndpointHostName"],
+                QnAServiceType = ServiceType.Language
             },
-            null,
-            httpClient);
+            null,httpClient
+            );
 
             var options = new QnAMakerOptions { Top = 1 };
 
