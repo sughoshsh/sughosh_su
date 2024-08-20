@@ -56,7 +56,8 @@ namespace CoreBot.Dialogs
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             await stepContext.Context.SendActivityAsync(MessageFactory.Text("Please choose an option to proceed further."), cancellationToken);
-            List<string> operationList = new List<string> { "Use Azure SQL DB", "Use QnA Maker" };
+            List<string> operationList = new List<string> { "Learning","Functional Related Queries","Operation (L1/L2 Support)",
+                "Generate Report" };
             // Create card
             var card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 0))
             {
@@ -88,7 +89,7 @@ namespace CoreBot.Dialogs
             stepContext.Values["UserOperation"] = ((FoundChoice)stepContext.Result).Value;
 
             string operation = (string)stepContext.Values["UserOperation"];
-            if (operation.Equals("Use Azure SQL DB"))
+            if (operation.Equals("Operation (L1/L2 Support)"))
             {
                 return await stepContext.BeginDialogAsync(nameof(AzureSQLDBDialog), null, cancellationToken);
             }

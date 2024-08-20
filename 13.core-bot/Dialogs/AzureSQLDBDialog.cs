@@ -7,6 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AdaptiveCards;
+using Microsoft.Bot.Builder.Dialogs.Choices;
+using Newtonsoft.Json.Linq;
+using Microsoft.Bot.Schema;
+using System.Runtime.Serialization;
+using NuGet.ContentModel;
+using Microsoft.Identity.Client;
 
 namespace CoreBot.Dialogs
 {
@@ -14,7 +21,13 @@ namespace CoreBot.Dialogs
     {
         FinacleSqldbContext context;
         public FinacleSqldbContext Context { get { return context; } }
+        public string choice;
 
+        public class DialogOptions
+        {
+            public int StartAtStep { get; set; }
+            public string UserChoice { get; set; }
+        }
         public AzureSQLDBDialog()
             : base(nameof(AzureSQLDBDialog))
         {
@@ -25,7 +38,17 @@ namespace CoreBot.Dialogs
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
-                IntroStepAsync,
+                async (stepContext, cancellationToken) => 
+                {
+    
+                // Check if we should skip this step
+                if (stepContext.Options is DialogOptions options && options.StartAtStep == 1)
+                {
+                    return await stepContext.NextAsync(null, cancellationToken);
+                }
+                    return await IntroStepAsync(stepContext, cancellationToken);
+                },
+                IntroStepAsync1,
                 ActStepAsync,
                 FinalStepAsync,
             }));
@@ -36,42 +59,236 @@ namespace CoreBot.Dialogs
 
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text("Please choose an option to proceed further."), cancellationToken);
+            List<string> operationList = new List<string> { "Get Cpty Position Details",
+                "Get Trading Book Dormancy Status",
+                "Get EOD Feed Delivery Status",
+                "Know Trade Message Delivery Status" };
+            // Create card
+            var card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 0))
+            {
+                // Use LINQ to turn the choices into submit actions
+                Actions = operationList.Select(choice => new AdaptiveSubmitAction
+                {
+                    Title = choice,
+                    Data = choice,  // This will be a string
+                }).ToList<AdaptiveAction>(),
+            };
+            // Prompt
+            return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions
+            {
+                Prompt = (Activity)MessageFactory.Attachment(new Attachment
+                {
+                    ContentType = AdaptiveCard.ContentType,
+                    // Convert the AdaptiveCard to a JObject
+                    Content = JObject.FromObject(card),
+                }),
+                Choices = ChoiceFactory.ToChoices(operationList),
+                // Don't render the choices outside the card
+                Style = ListStyle.None,
+            },
+                cancellationToken);        
+            
+        }
+
+        private async Task<DialogTurnResult> IntroStepAsync1(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            // Retrieve the UserChoice value from the dialog options
+            if (stepContext.Options is DialogOptions options && !string.IsNullOrEmpty(options.UserChoice))
+            {
+                stepContext.Values["UserChoice"] = options.UserChoice;
+            }
+            else if (stepContext.Result != null && stepContext.Result is FoundChoice foundChoice)
+            {
+                stepContext.Values["UserChoice"] = foundChoice.Value;
+            }
+            //stepContext.Values["UserChoice"] = ((FoundChoice)stepContext.Result).Value;
+
+            choice = (string)stepContext.Values["UserChoice"];
+            if (choice.Equals("Get Cpty Position Details"))
+            {
+                //Ask for cpty code and fetch details from DB
+
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
+                {
+                    Prompt = MessageFactory.Text("Enter cpty code name.")
+                }, cancellationToken);
+            }
+            else if (choice.Equals("Get Trading Book Dormancy Status"))
+            {
+
+                //Ask for book name and fetch details from DB
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
+                {
+                    Prompt = MessageFactory.Text("Enter trading book name.")
+                }, cancellationToken);
+            }
+            else if (choice.Equals("Get EOD Feed Delivery Status"))
+            {
+
+                //ask for the feed file name and system name
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
+                {
+                    Prompt = MessageFactory.Text("Enter the System name.")
+                }, cancellationToken);
+            }
+            else if (choice.Equals("Know Trade Message Delivery Status"))
+            {
+                //ask for trade number
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
+                {
+                    Prompt = MessageFactory.Text("Enter trade number")
+                }, cancellationToken);
+
+            }
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
             {
-                Prompt = MessageFactory.Text("Please enter the region Code.")
+                Prompt = MessageFactory.Text("No Match, ")
             }, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ActStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            stepContext.Values["Name"] = (string)stepContext.Result;
-
-            // Do some query on SQL Database
-            var RegName = (string)stepContext.Values["Name"];
-            Region region = FetchRegionName(RegName);
-
-            if (region == null)
-            {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Region with id {RegName} not found."), cancellationToken);
+            
+            // DB Fetch Operation.
+            stepContext.Values["PromtValue"] = (String)stepContext.Result;
+                        
+            //customer details
+            if (choice.Equals("Get Cpty Position Details"))
+             {
+                var cust = (string)stepContext.Values["PromtValue"];
+                if (cust != null)
+                {
+                    CustomerDetail customer = FetchCptyPosition(cust);
+                    if (customer == null)
+                    {
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Customer with code {cust} not found."), cancellationToken);
+                    }
+                    else
+                    {
+                        var replyText = customer.CustCode + " > Status:: " + customer.CustStatus + " Position:: " + customer.CustLivePosition;
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
+                    }
+                    return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
+                    {
+                        Prompt = MessageFactory.Text("Would you like to get details for more codes?")
+                    }, cancellationToken);
+                }
+                else
+                {
+                    return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
+                    {
+                        Prompt = MessageFactory.Text("Customer Code/name is Empty, Please re-enter.")
+                    }, cancellationToken);
+                }
+            
             }
-            else
+            //Book Details
+            else if (choice.Equals("Get Trading Book Dormancy Status"))
             {
-                var replyText = region.Name + ": " + region.DisplayName;
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
+                var book = (string)stepContext.Values["PromtValue"];
+                if (book != null)
+                {
+                    TradingBook bookdetails = FetchBookPosition(book);
+                    if (bookdetails == null)
+                    {
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Book with name {book} not found."), cancellationToken);
+                    }
+                    else
+                    {
+                        var replyText = bookdetails.BookName + " > Status :: " + bookdetails.BookStatus + " Position :: " + bookdetails.BookLivePosition;
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
+                    }
+                    return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
+                    {
+                        Prompt = MessageFactory.Text("Would you like to get details for more books?")
+                    }, cancellationToken);
+                }
+                else
+                {
+                    return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
+                    {
+                        Prompt = MessageFactory.Text("Book Code/name is Empty, Please re-enter.")
+                    }, cancellationToken);
+                }
+
             }
+            ////feed pub details
+            else if (choice.Equals("Get EOD Feed Delivery Status"))
+            {
+                var sys = (string)stepContext.Values["PromtValue"];
+                if (sys != null)
+                {
+                    Eodpublisher pubDetails = FetchPubStatus(sys);
+                    if (pubDetails == null)
+                    {
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"System with name {sys} not found."), cancellationToken);
+                    }
+                    else
+                    {
+                        var replyText = pubDetails.SystemName + " > Status:: " + pubDetails.PubStatus + " EOD Date :: " + pubDetails.EodDate;
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
+                    }
+                    return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
+                    {
+                        Prompt = MessageFactory.Text("Would you like to get publisher details for more systems?")
+                    }, cancellationToken);
+                }
+                else
+                {
+                    return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
+                    {
+                        Prompt = MessageFactory.Text("System name is Empty, Please re-enter.")
+                    }, cancellationToken);
+                }
 
+            }
+            ////Trade Flow Details
+            else if (choice.Equals("Know Trade Message Delivery Status"))
+            {
+                var id = (string)stepContext.Values["PromtValue"];
+                if (id != null)
+                {
+                    TradeFlow flowStatus = FetchTradeFlowStatus(id);
+                    if (flowStatus == null)
+                    {
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Trade Number {id} not found."), cancellationToken);
+                    }
+                    else
+                    {
+                        var replyText = flowStatus.TradeId + " > Status:: " + flowStatus.LoadStatus + " Load Date:: " + flowStatus.LoadDate;
+                        await stepContext.Context.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
+                    }
+                    return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
+                    {
+                        Prompt = MessageFactory.Text("Would you like to get details for more trades?")
+                    }, cancellationToken);
+                }
+                else
+                {
+                    return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
+                    {
+                        Prompt = MessageFactory.Text("Trade Number is Empty, Please re-enter.")
+                    }, cancellationToken);
+                }
 
+            }
             return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions
             {
-                Prompt = MessageFactory.Text("Would you like to search for more region names?")
+                Prompt = MessageFactory.Text("Incorrect Option selected.?")
             }, cancellationToken);
+
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             if ((bool)stepContext.Result)
             {
-                return await stepContext.ReplaceDialogAsync(InitialDialogId, null, cancellationToken);
+                // Store the UserChoice value in the dialog state
+                stepContext.Values["UserChoice"] = stepContext.Values.ContainsKey("UserChoice") 
+                    ? stepContext.Values["UserChoice"] : null;
+                return await stepContext.ReplaceDialogAsync(InitialDialogId, new DialogOptions { StartAtStep = 1, UserChoice = (string)stepContext.Values["UserChoice"] }
+                , cancellationToken);
             }
             else
             {
@@ -79,20 +296,65 @@ namespace CoreBot.Dialogs
             }
         }
 
-        public Region FetchRegionName(string str)
+        public CustomerDetail FetchCptyPosition(string str)
         {
-            Region region;
+            CustomerDetail position;
             try
             {
-                region = (from e in Context.Regions
-                            where e.Name == str
-                            select e).FirstOrDefault();//Query for employee details with id
+                position = (from c in Context.CustomerDetails
+                          where c.CustCode == str
+                          select c).FirstOrDefault(); //Query for customer position details with cust code
             }
             catch (Exception)
             {
                 throw;
             }
-            return region;
+            return position;
+        }
+        public TradingBook FetchBookPosition(string str)
+        {
+            TradingBook position;
+            try
+            {
+                position = (from b in Context.TradingBooks
+                            where b.BookName == str
+                            select b).FirstOrDefault(); //Query for trading book position details with book name.
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return position;
+        }
+        public Eodpublisher FetchPubStatus(string str)
+        {
+            Eodpublisher status;
+            try
+            {
+                status = (from p in Context.Eodpublishers
+                            where p.SystemName == str
+                            select p).FirstOrDefault(); //Query for feed pub status.
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return status;
+        }
+        public TradeFlow FetchTradeFlowStatus(string str)
+        {
+            TradeFlow status;
+            try
+            {
+                status = (from t in Context.TradeFlows
+                          where t.TradeId == str
+                          select t).FirstOrDefault(); //Query for trade flow status.
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return status;
         }
     }
 }
